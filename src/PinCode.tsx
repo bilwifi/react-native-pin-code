@@ -11,6 +11,7 @@ import SetLayout from './SetLayout';
 const PinCode = ({
     pin,
     visible = false,
+    onHashPin = (pinEnter : string) => pinEnter,
     mode = PinCodeT.Modes.Enter,
     options,
     textOptions,
@@ -66,7 +67,7 @@ const PinCode = ({
 
     return <View style={[DEFAULT.Styles.main, styles?.main]}>
         {(curMode == PinCodeT.Modes.Enter) &&
-            <EnterLayout pin={pin} mode={curMode}
+            <EnterLayout pin={pin} mode={curMode} onHashPin={onHashPin}
                 options={curOptions} textOptions={curTextOptions}
                 onEnter={onEnter}
                 onMaxAttempt={() => switchMode(PinCodeT.Modes.Locked)}
@@ -75,7 +76,7 @@ const PinCode = ({
             />
         }
         {(curMode == PinCodeT.Modes.Set) &&
-            <SetLayout pin={pin} mode={curMode}
+            <SetLayout pin={pin} mode={curMode} onHashPin={onHashPin}
                 options={curOptions} textOptions={curTextOptions}
                 onSet={onSet}
                 onReset={() => switchMode(PinCodeT.Modes.Reset)}

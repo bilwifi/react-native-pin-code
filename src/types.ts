@@ -181,6 +181,14 @@ export namespace PinCodeT {
          */
         styles?: PinCodeStyles,
         /**
+         * callback function which allows the pin to be encrypted before comparing the entered PIN and the stored PIN,
+         * Useful if the stored PIN has been hashed
+         * @param pin the entered pin
+         * @see pin
+         * @returns 
+         */
+        onHashPin: (pin: string) => string;
+        /**
          * Triggered when the mode is `enter` and the user has entered the correct PIN. The application should hide the PinCode component and show its own content.
          * @param pin the entered pin
          * @see pin
@@ -278,6 +286,11 @@ export namespace PinCodeT {
          * @default 1000
          */
         retryLockDuration?: number;
+
+        /**
+         * Determines whether the number buttons are shuffled or displayed in their default order.
+         */
+        randomPositions?: boolean;
     }
 
     export type EnterTextOptions = {
