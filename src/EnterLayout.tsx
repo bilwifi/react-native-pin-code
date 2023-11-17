@@ -5,7 +5,7 @@ import { DEFAULT } from './common';
 import NumbersPanel from './components/NumbersPanel';
 import Pin from './components/Pin';
 
-const EnterLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, onEnter, onReset, onMaxAttempt }: {
+const EnterLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, onEnter, onReset, onMaxAttempt, onHashPin }: {
     pin: string | undefined;
     styles?: PinCodeT.EnterStyles;
     mode: PinCodeT.Modes;
@@ -15,6 +15,7 @@ const EnterLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, on
     onEnter: (newPin: string) => void;
     onMaxAttempt: () => void;
     onReset: () => void;
+    onHashPin: (pinEnter : string) => string;
 }) => {
     const [curPin, setCurPin] = useState('');
     const [disabled, disableButtons] = useState(false);
@@ -29,7 +30,7 @@ const EnterLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, on
         setCurPin(newPin);
 
         if (newPin.length == options?.pinLength) {
-            await processEnterPin(newPin)
+            await processEnterPin(onHashPin(newPin) || newPin)
         }
     }
 
@@ -76,7 +77,7 @@ const EnterLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, on
                 pinStyle={[DEFAULT.Styles.enter?.pin, styles?.pin]}
                 enteredPinStyle={[DEFAULT.Styles.enter?.enteredPin, styles?.enteredPin]} />
 
-            <NumbersPanel disabled={disabled} onButtonPress={onNumberPress}
+            <NumbersPanel disabled={disabled} onButtonPress={onNumberPress} randomPositions={options?.randomPositions}
                 backSpace={options?.backSpace} backSpaceText={textOptions.enter?.backSpace}
                 buttonStyle={styles?.button} rowStyle={styles?.buttonRow} style={styles?.buttonContainer}
                 textStyle={styles?.buttonText} disabledStyle={styles?.buttonTextDisabled}

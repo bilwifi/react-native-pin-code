@@ -5,7 +5,7 @@ import { DEFAULT } from './common';
 import NumberButtons from './components/NumbersPanel';
 import Pin from './components/Pin';
 
-const SetLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, onSet, onSetCancel, onReset }: {
+const SetLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, onSet, onSetCancel, onReset, onHashPin }: {
     pin: string | undefined;
     styles?: PinCodeT.SetStyles;
     mode: PinCodeT.Modes;
@@ -15,6 +15,7 @@ const SetLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, onSe
     onSetCancel?: () => void;
     onSet: (newPin: string) => void;
     onReset: () => void;
+    onHashPin : (pinEnter : string) => string;
 }) => {
     const [curPin, setCurPin] = useState('');
     const [lastPin, setLastPin] = useState('');
@@ -38,7 +39,7 @@ const SetLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, onSe
             // STEP 2
             else if (status == PinCodeT.Statuses.SetOnce) {
                 if (lastPin == newPin) { // pin matched
-                    onSet(newPin);
+                    onSet(onHashPin(newPin) || newPin);
                 } else { // pin doesn't matched
                     setShowError(true);
                     if (Platform.OS === 'ios') {
@@ -73,7 +74,7 @@ const SetLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, onSe
                 enteredPinStyle={[DEFAULT.Styles.set?.enteredPin, styles?.enteredPin]} />
 
             <NumberButtons onButtonPress={onNumberPress}
-                backSpace={options?.backSpace} backSpaceText={textOptions.enter?.backSpace}
+                backSpace={options?.backSpace} backSpaceText={textOptions.enter?.backSpace} randomPositions={options?.randomPositions}
                 buttonStyle={styles?.button} rowStyle={styles?.buttonRow} style={styles?.buttonContainer} textStyle={styles?.buttonText}
             />
         </View>
