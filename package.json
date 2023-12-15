@@ -1,6 +1,6 @@
 {
   "name": "react-native-pincode-2",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Pin Code component for React Native",
   "scripts": {
     "build": "tsc --project ./tsconfig.json",

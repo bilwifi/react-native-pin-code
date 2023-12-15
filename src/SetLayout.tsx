@@ -80,6 +80,7 @@ const SetLayout = ({ pin, styles, mode, textOptions, options, onSwitchMode, onSe
         </View>
         <View style={[DEFAULT.Styles.enter?.footer, styles?.footer]}>
             <Text onPress={cancel} style={[DEFAULT.Styles.set?.footerText, styles?.footerText]}>{textOptions.set?.cancel}</Text>
+            {options?.footerComponent}
         </View>
     </>
 }

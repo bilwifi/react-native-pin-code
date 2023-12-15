@@ -291,6 +291,12 @@ export namespace PinCodeT {
          * Determines whether the number buttons are shuffled or displayed in their default order.
          */
         randomPositions?: boolean;
+
+        /**
+         * Footer component. 
+         * @example <View><Text>Deconnexion</Text></View>
+         */
+        footerComponent?: JSX.Element;
     }
 
     export type EnterTextOptions = {
