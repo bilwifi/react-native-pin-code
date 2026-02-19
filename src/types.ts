@@ -189,6 +189,19 @@ export namespace PinCodeT {
          */
         onHashPin: (pin: string) => string;
         /**
+         * Optional callback to trigger local authentication (Face ID, Touch ID, system passcode, etc.).
+         * Return true when authentication succeeds.
+         */
+        onLocalAuth?: () => Promise<boolean> | boolean;
+        /**
+         * Triggered when `onLocalAuth` returns true.
+         */
+        onLocalAuthSuccess?: () => void;
+        /**
+         * Triggered when `onLocalAuth` fails or throws.
+         */
+        onLocalAuthError?: (error?: unknown) => void;
+        /**
          * Triggered when the mode is `enter` and the user has entered the correct PIN. The application should hide the PinCode component and show its own content.
          * @param pin the entered pin
          * @see pin
@@ -297,6 +310,14 @@ export namespace PinCodeT {
          * @example <View><Text>Deconnexion</Text></View>
          */
         footerComponent?: JSX.Element;
+        /**
+         * If true, display local authentication trigger in the `enter` mode.
+         */
+        allowLocalAuth?: boolean;
+        /**
+         * If true, local authentication will be triggered automatically when `enter` mode is shown.
+         */
+        autoTriggerLocalAuth?: boolean;
     }
 
     export type EnterTextOptions = {
@@ -321,6 +342,10 @@ export namespace PinCodeT {
          * Text for the footer in the `ENTER` mode
          */
         footerText?: string;
+        /**
+         * Label of the local authentication button in `ENTER` mode.
+         */
+        localAuthButton?: string;
     }
 
     export type SetTextOptions = {
@@ -407,4 +432,3 @@ export namespace PinCodeT {
         reset?: ResetTextOptions
     }
 }
-

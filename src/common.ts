@@ -24,7 +24,9 @@ export const DEFAULT = {
         disableLock: false,
         lockDuration: 60000,
         maxAttempt: 10,
-        retryLockDuration: 1000
+        retryLockDuration: 1000,
+        allowLocalAuth: false,
+        autoTriggerLocalAuth: false
     } as PinCodeT.Options,
     TextOptions: {
         enter: {
@@ -32,7 +34,8 @@ export const DEFAULT = {
             subTitle: 'Enter {{pinLength}}-digit PIN to access.',
             error: 'Wrong PIN! Try again.',
             backSpace: 'Delete',
-            footerText: 'Forgot PIN?'
+            footerText: 'Forgot PIN?',
+            localAuthButton: 'Use device authentication'
         },
         set: {
             title: 'Set up a new PIN',

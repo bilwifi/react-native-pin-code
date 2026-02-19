@@ -51,6 +51,9 @@ const Screen = () => {
 | onSetCancel    | Triggered when the mode is `set` and user cancels the setting pin. The app should hide the pin code                                                                                                                               | true     |         |
 | onReset        | Called when the user has confirmed to reset the pin. The application may clear the content, history, anything that belongs to the user if necessary                                                                               | false    |         |
 | onModeChanged  | Called when the mode changes.<br/>Parameters:<ul><li>lastMode: the previous mode</li><li>newMode: the changed to mode</li></ul>                                                                                                   | false    |         |
+| onLocalAuth    | Optional callback to trigger local authentication (Face ID, Touch ID, device passcode). Must return `true` on success.                                                                                                              | false    |         |
+| onLocalAuthSuccess | Called when `onLocalAuth` returns `true`.                                                                                                                                                                                  | false    |         |
+| onLocalAuthError | Called when `onLocalAuth` fails or throws.                                                                                                                                                                                 | false    |         |
 
 
 ## Options
@@ -64,6 +67,8 @@ const Screen = () => {
 | backSpace         | On `enter`/`set` mode the "Delete" button is used to delete the entered digit. But you can pass an ```<Icon name='backspace' size={24} />``` to display an icon instead.             | false    |         |
 | lockedIcon        | On the `locked` screen the "Locked" text is shown above the countdown. But you can pass an ```<Icon name='lock' size={24} />``` to display an icon instead.                          | false    |         |
 | retryLockDuration | A short duration (miliseconds) between attempts. This is also the timeout to hide the `error` message.                                                                          | false    | 1000    | 
+| allowLocalAuth   | If true, show a local authentication button in `enter` mode.                                                                                                                         | false    | false   |
+| autoTriggerLocalAuth | If true, local authentication is triggered automatically when `enter` mode is shown.                                                                                             | false    | false   |
 
 
 ## Text Options
@@ -77,6 +82,7 @@ The text options are grouped by `mode` for the ease to find.
 | error      | error message when user enter wrong PIN | false    | Wrong PIN! Try again.        | string |
 | backSpace  | the text of the backspace button        | false    | Delete                       | string |
 | footerText | the text of the footer button           | false    | Forgot PIN?                  | string |
+| localAuthButton | the text of the local authentication button | false | Use device authentication | string |
 
 ### `Set` mode text options
 | Name       | Description                                       | Required | Default                                   | Type   |
@@ -105,6 +111,44 @@ The text options are grouped by `mode` for the ease to find.
 | confirm       | The message to ask the user to confirm the resetting                                                                                                                       | false    | Are you sure you want remove the PIN?                  | string |
 | confirmButton | Label of the confirm button                                                                                                                                                | false    | Confirm                                                | string |
 | footerText    | The footer text                                                                                                                                                            | false    | Back                                                   | string |
+
+## Local authentication (Expo managed + bare RN)
+This package stays runtime dependency-free. You provide the local auth implementation with callbacks, so it works with:
+- `expo-local-authentication` in Expo managed apps
+- any native/local auth library in bare React Native
+
+A full Expo integration (ready-to-run) is available in:
+- `examples/expo/README.md`
+- `examples/expo/App.tsx`
+
+```JSX
+import * as LocalAuthentication from 'expo-local-authentication';
+
+<PinCode
+  pin={pin}
+  visible={pinVisible}
+  mode={PinCodeT.Modes.Enter}
+  options={{
+    allowLocalAuth: true,
+    autoTriggerLocalAuth: true
+  }}
+  onLocalAuth={async () => {
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: 'Authenticate to continue',
+      fallbackLabel: 'Use PIN'
+    });
+    return result.success;
+  }}
+  onLocalAuthSuccess={() => setPinVisible(false)}
+  onLocalAuthError={() => {
+    // keep PIN screen as fallback
+  }}
+  onEnter={() => setPinVisible(false)}
+  onSet={newPin => setPin(newPin)}
+  onSetCancel={() => setPinVisible(false)}
+  onReset={() => setPin(undefined)}
+/>
+```
 
 
 

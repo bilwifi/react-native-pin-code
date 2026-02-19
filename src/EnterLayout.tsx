@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Platform, Pressable, Text, Vibration, View } from "react-native";
 import { PinCodeT } from "./types";
 import { DEFAULT } from "./common";
@@ -16,6 +16,9 @@ const EnterLayout = ({
   onReset,
   onMaxAttempt,
   onHashPin,
+  onLocalAuth,
+  onLocalAuthSuccess,
+  onLocalAuthError,
 }: {
   pin: string | undefined;
   styles?: PinCodeT.EnterStyles;
@@ -27,11 +30,15 @@ const EnterLayout = ({
   onMaxAttempt: () => void;
   onReset: () => void;
   onHashPin: (pinEnter: string) => string;
+  onLocalAuth?: () => Promise<boolean> | boolean;
+  onLocalAuthSuccess?: () => void;
+  onLocalAuthError?: (error?: unknown) => void;
 }) => {
   const [curPin, setCurPin] = useState("");
   const [disabled, disableButtons] = useState(false);
   const [failureCount, setFailureCount] = useState(0);
   const [showError, setShowError] = useState(false);
+  const localAuthRequestedRef = useRef(false);
 
   async function onNumberPress(value: string) {
     const newPin =
@@ -84,6 +91,32 @@ const EnterLayout = ({
     );
   }
 
+  async function triggerLocalAuth() {
+    if (!options?.allowLocalAuth || !onLocalAuth || disabled) return;
+
+    disableButtons(true);
+    try {
+      const authenticated = await onLocalAuth();
+      if (authenticated) {
+        onLocalAuthSuccess?.();
+      } else {
+        onLocalAuthError?.();
+      }
+    } catch (error) {
+      onLocalAuthError?.(error);
+    } finally {
+      disableButtons(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!options?.allowLocalAuth || !options?.autoTriggerLocalAuth || !onLocalAuth) return;
+    if (localAuthRequestedRef.current) return;
+
+    localAuthRequestedRef.current = true;
+    triggerLocalAuth();
+  }, [onLocalAuth, options?.allowLocalAuth, options?.autoTriggerLocalAuth]);
+
   return (
     <>
       <View style={[DEFAULT.Styles.enter?.header, styles?.header]}>
@@ -129,6 +162,20 @@ const EnterLayout = ({
         />
       </View>
       <View style={[DEFAULT.Styles.enter?.footer, styles?.footer]}>
+        {options?.allowLocalAuth && onLocalAuth && (
+          <Pressable
+            disabled={disabled}
+            onPress={triggerLocalAuth}
+            style={(state) => ({ opacity: state.pressed || disabled ? 0.6 : 1 })}
+          >
+            <Text
+              style={[DEFAULT.Styles.enter?.footerText, styles?.footerText]}
+            >
+              {textOptions.enter?.localAuthButton ||
+                DEFAULT.TextOptions.enter?.localAuthButton}
+            </Text>
+          </Pressable>
+        )}
         {options?.allowReset && (
           <Pressable
             onPress={onReset}

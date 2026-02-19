@@ -12,6 +12,9 @@ const PinCode = ({
     pin,
     visible = false,
     onHashPin = (pinEnter : string) => pinEnter,
+    onLocalAuth,
+    onLocalAuthSuccess,
+    onLocalAuthError,
     mode = PinCodeT.Modes.Enter,
     options,
     textOptions,
@@ -72,6 +75,9 @@ const PinCode = ({
                 onEnter={onEnter}
                 onMaxAttempt={() => switchMode(PinCodeT.Modes.Locked)}
                 onReset={() => switchMode(PinCodeT.Modes.Reset)}
+                onLocalAuth={onLocalAuth}
+                onLocalAuthSuccess={onLocalAuthSuccess}
+                onLocalAuthError={onLocalAuthError}
                 styles={styles?.enter}
             />
         }
