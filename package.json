@@ -10,7 +10,7 @@
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bilwifi/react-native-pin-code.git"
+    "url": "git+https://github.com/bilwifi/react-native-pin-code.git"
   },
   "author": "Anh Nguyen <anhnch@gmail.com> https://github.com/anhnch",
   "contributor": "Peniel Dialu <dialundamapeniel@gmail.com> https://github.com/bilwifi",
